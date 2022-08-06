@@ -14,6 +14,6 @@ class _MainScreenWidgetsState extends State<MainScreenWidgets> {
       appBar:AppBar(title: Text('TMDB'),
         centerTitle: true,
       ),
-    );
+    ) ;
   }
 }
