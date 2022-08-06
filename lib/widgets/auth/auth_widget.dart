@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:training/theme/button_style.dart';
+import 'package:training/widgets/main_screen/main_screen_widgets.dart';
 
 class AuthWidget extends StatefulWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -85,6 +86,7 @@ class _FormWidgetState extends State<_FormWidget> {
     final password = _passwordController.text;
     if (login == "admin" && password == 'admin') {
       errorText = null;
+      Navigator.of(context).pushReplacementNamed('main_screen');
       print("Открыть страницу");
     } else {
       errorText = 'Не правильный логин или пароль';
