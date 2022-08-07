@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:training/theme/button_style.dart';
-import 'package:training/widgets/main_screen/main_screen_widgets.dart';
 
 class AuthWidget extends StatefulWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -30,7 +29,7 @@ class _HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = const TextStyle(fontSize: 16, color: Colors.black);
+    const textStyle = TextStyle(fontSize: 16, color: Colors.black);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -43,7 +42,7 @@ class _HeaderWidget extends StatelessWidget {
           const SizedBox(
             height: 25,
           ),
-          Text(
+          const Text(
             '''Чтобы пользоваться правкой и возможностями рейтинга TMDB, а также получить персональные рекомендации, необходимо войти в свою учётную запись. Если у вас нет учётной записи, её регистрация является бесплатной и простой.''',
             style: textStyle,
           ),
@@ -54,9 +53,9 @@ class _HeaderWidget extends StatelessWidget {
           const SizedBox(
             height: 25,
           ),
-          Text(
+          const Text(
             "Если Вы зарегистрировались, но не получили письмо для "
-                "подтверждения.",
+            "подтверждения.",
             style: textStyle,
           ),
           TextButton(
@@ -77,9 +76,9 @@ class _FormWidget extends StatefulWidget {
 }
 
 class _FormWidgetState extends State<_FormWidget> {
-  final _loginTextController = TextEditingController();
-  final _passwordController = TextEditingController();
-  String? errorText = null;
+  final _loginTextController = TextEditingController(text: "admin");
+  final _passwordController = TextEditingController(text: 'admin');
+  String? errorText;
 
   void _auth() {
     final login = _loginTextController.text;
@@ -87,36 +86,36 @@ class _FormWidgetState extends State<_FormWidget> {
     if (login == "admin" && password == 'admin') {
       errorText = null;
       Navigator.of(context).pushReplacementNamed('main_screen');
-      print("Открыть страницу");
     } else {
       errorText = 'Не правильный логин или пароль';
-      print("Ошибка");
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _resetPassword() {
-    print("Cброс");
   }
 
   @override
   Widget build(BuildContext context) {
-    final color = const Color(0xFF01B4E4);
-    final textStyle = const TextStyle(fontSize: 16, color: Colors.black);
-    final textFielDecorator = const InputDecoration(
+    const color = Color(0xFF01B4E4);
+    const textStyle = TextStyle(fontSize: 16, color: Colors.black);
+    const textFielDecorator = InputDecoration(
         border: OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10));
     final errorText = this.errorText;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if(errorText != null) ...[
-          Text(errorText, style: TextStyle(color: Colors.red, fontSize: 17),),
-          SizedBox(height: 20,)
+        if (errorText != null) ...[
+          Text(
+            errorText,
+            style: const TextStyle(color: Colors.red, fontSize: 17),
+          ),
+          const SizedBox(
+            height: 20,
+          )
         ],
-        Text(
+        const Text(
           'Имя пользователя',
           style: textStyle,
         ),
@@ -130,7 +129,7 @@ class _FormWidgetState extends State<_FormWidget> {
         const SizedBox(
           height: 20,
         ),
-        Text(
+        const Text(
           'Пароль',
           style: textStyle,
         ),
