@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:training/theme/app_colors.dart';
-import 'package:training/widgets/auth/auth_widget.dart';
-import 'package:training/widgets/main_screen/main_screen_widgets.dart';
+import 'package:training/ui/main_navigation.dart';
+import 'package:training/widgets/app/my_app_model.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final model = MyAppModel();
+  await model.checkAuth();
+  runApp(
+    MyApp(
+      model: model,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final MyAppModel model;
+  static final mainNavigation = MainNavigation();
+
+  const MyApp({Key? key, required this.model}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(backgroundColor: AppColors.mainDarkBlue),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: AppColors.mainDarkBlue,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.green,
-         enableFeedback: false
-        ),
+            backgroundColor: AppColors.mainDarkBlue,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.green,
+            enableFeedback: false),
       ),
-      routes: {
-        '/auth': (context) => const AuthWidget(),
-        'main_screen': (context) => const MainScreenWidgets(),
-      },
-      initialRoute: '/auth',
+      routes: mainNavigation.routers,
+      initialRoute: mainNavigation.initialRoute(model.isAuth),
+      onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }
 }
