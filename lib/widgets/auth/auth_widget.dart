@@ -147,6 +147,7 @@ class _AuthButtonWidget extends StatelessWidget {
           )
         : const Text('Login');
     return ElevatedButton(
+
       onPressed: onPressed,
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(color),
@@ -162,6 +163,7 @@ class _AuthButtonWidget extends StatelessWidget {
         ),
       ),
       child: child,
+
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:training/domain/data_providers/session_data_providers.dart';
 import 'package:training/widgets/movie_list/movie_list_widget.dart';
 
 class MainScreenWidgets extends StatefulWidget {
@@ -26,6 +27,12 @@ class _MainScreenWidgetsState extends State<MainScreenWidgets> {
           'TMDB',
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () => SessionDataProvider().setSessionId(null),
+            icon: Icon(Icons.search),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTab,
