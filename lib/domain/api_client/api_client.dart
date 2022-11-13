@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:training/domain/entity/popular_movie_response.dart';
+
 enum ApiClientExeptionType { Network, Auth, Other }
 
 class ApiClientExeption implements Exception {
@@ -12,8 +14,11 @@ class ApiClientExeption implements Exception {
 class ApiClient {
   final _client = HttpClient();
   static const _host = 'https://api.themoviedb.org/3';
-  // static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
+
+  static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = 'fe73383de8cd900c60855de5c9c2053d';
+
+  static String imageUrl(String path)=>   _imageUrl + path;
 
   Future<String> auth({
     required String username,
@@ -39,10 +44,10 @@ class ApiClient {
   }
 
   Future<T> _get<T>(
-    String path,
-    T Function(dynamic json) parser, [
-    Map<String, dynamic>? parameters,
-  ]) async {
+      String path,
+      T Function(dynamic json) parser, [
+        Map<String, dynamic>? parameters,
+      ]) async {
     final url = _makeUri(path, parameters);
 
     try {
@@ -63,11 +68,11 @@ class ApiClient {
   }
 
   Future<T> _post<T>(
-    String path,
-    Map<String, dynamic>? bodyParameters,
-    T Function(dynamic json) parser, [
-    Map<String, dynamic>? urlParameters,
-  ]) async {
+      String path,
+      Map<String, dynamic>? bodyParameters,
+      T Function(dynamic json) parser, [
+        Map<String, dynamic>? urlParameters,
+      ]) async {
     try {
       final url = _makeUri(path, urlParameters);
       final request = await _client.postUrl(url);
@@ -100,6 +105,25 @@ class ApiClient {
       '/authentication/token/new',
       parser,
       <String, dynamic>{'api_key': _apiKey},
+    );
+    return result;
+  }
+
+  Future<PopularMovieResponse> popularMovie(int page, String locale) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = _get(
+      '/movie/popular',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'page': page.toString(),
+        'language': locale,
+      },
     );
     return result;
   }

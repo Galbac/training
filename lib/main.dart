@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:training/theme/app_colors.dart';
 import 'package:training/ui/main_navigation.dart';
 import 'package:training/widgets/app/my_app_model.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final model = MyAppModel();
@@ -34,6 +34,15 @@ class MyApp extends StatelessWidget {
             unselectedItemColor: Colors.green,
             enableFeedback: false),
       ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ru', 'RU'),
+        Locale('en', ''),
+      ],
       routes: mainNavigation.routers,
       initialRoute: mainNavigation.initialRoute(model.isAuth),
       onGenerateRoute: mainNavigation.onGenerateRoute,
