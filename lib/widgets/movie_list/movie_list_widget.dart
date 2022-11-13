@@ -19,6 +19,7 @@ class MovieListWidget extends StatelessWidget {
           itemExtent: 163,
           itemCount: model.movies.length,
           itemBuilder: (BuildContext context, int index) {
+            model.showedMovieAtIndex(index);
             final movie = model.movies[index];
             final posterPath = movie.posterPath;
             return Padding(
