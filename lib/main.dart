@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         Locale('ru', 'RU'),
         Locale('en', ''),
       ],
-      routes: mainNavigation.routers,
+      routes: mainNavigation.routes,
       initialRoute: mainNavigation.initialRoute(model.isAuth),
       onGenerateRoute: mainNavigation.onGenerateRoute,
     );

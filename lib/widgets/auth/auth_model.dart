@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:training/domain/api_client/api_client.dart';
 import 'package:training/domain/data_providers/session_data_providers.dart';
@@ -8,17 +9,14 @@ class AuthModel extends ChangeNotifier {
   final _apiClient = ApiClient();
   final _sessionDataProvider = SessionDataProvider();
 
-  final loginTextController = TextEditingController(text: "Galbac");
-  final passwordTextController = TextEditingController(text: "89898787808z");
+  final loginTextController = TextEditingController();
+  final passwordTextController = TextEditingController();
 
   String? _errorMessage;
-
   String? get errorMessage => _errorMessage;
 
   bool _isAuthProgress = false;
-
   bool get canStartAuth => !_isAuthProgress;
-
   bool get isAuthProgress => _isAuthProgress;
 
   Future<void> auth(BuildContext context) async {
@@ -39,17 +37,17 @@ class AuthModel extends ChangeNotifier {
         username: login,
         password: password,
       );
-    } on ApiClientExeption catch (e) {
+    } on ApiClientException catch (e) {
       switch (e.type) {
-        case ApiClientExeptionType.Network:
+        case ApiClientExceptionType.Network:
           _errorMessage =
-              "Сервер не доступен. Проверьте подключение к интернету.";
+          'Сервер не доступен. Проверте подключение к интернету';
           break;
-        case ApiClientExeptionType.Auth:
-          _errorMessage = 'Неправильный логин или пароль!';
+        case ApiClientExceptionType.Auth:
+          _errorMessage = 'Неправильный логин пароль!';
           break;
-        case ApiClientExeptionType.Other:
-          _errorMessage = 'Произошла ошибка! Попробуйте еше раз.';
+        case ApiClientExceptionType.Other:
+          _errorMessage = 'Произошла ошибка. Попробуйте еще раз';
           break;
       }
     }
@@ -65,7 +63,9 @@ class AuthModel extends ChangeNotifier {
       return;
     }
     await _sessionDataProvider.setSessionId(sessionId);
-    unawaited(Navigator.of(context)
-        .pushReplacementNamed(MainNavigationRouteNames.mainScreen));
+    unawaited(
+      Navigator.of(context)
+          .pushReplacementNamed(MainNavigationRouteNames.mainScreen),
+    );
   }
 }

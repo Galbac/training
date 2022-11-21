@@ -1,24 +1,23 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:training/domain/entity/movie_details.dart';
 import 'package:training/domain/entity/popular_movie_response.dart';
 
-enum ApiClientExeptionType { Network, Auth, Other }
+enum ApiClientExceptionType { Network, Auth, Other }
 
-class ApiClientExeption implements Exception {
-  final ApiClientExeptionType type;
+class ApiClientException implements Exception {
+  final ApiClientExceptionType type;
 
-  ApiClientExeption(this.type);
+  ApiClientException(this.type);
 }
 
 class ApiClient {
   final _client = HttpClient();
   static const _host = 'https://api.themoviedb.org/3';
-
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
-  static const _apiKey = 'fe73383de8cd900c60855de5c9c2053d';
+  static const _apiKey = '0a2a46b5593a0978cc8e87ba34037430';
 
-  static String imageUrl(String path)=>   _imageUrl + path;
+  static String imageUrl(String path) => _imageUrl + path;
 
   Future<String> auth({
     required String username,
@@ -49,27 +48,25 @@ class ApiClient {
         Map<String, dynamic>? parameters,
       ]) async {
     final url = _makeUri(path, parameters);
-
     try {
       final request = await _client.getUrl(url);
       final response = await request.close();
       final dynamic json = (await response.jsonDecode());
       _validateResponse(response, json);
-
       final result = parser(json);
       return result;
     } on SocketException {
-      throw ApiClientExeption(ApiClientExeptionType.Network);
-    } on ApiClientExeption {
+      throw ApiClientException(ApiClientExceptionType.Network);
+    } on ApiClientException {
       rethrow;
     } catch (_) {
-      throw ApiClientExeption(ApiClientExeptionType.Other);
+      throw ApiClientException(ApiClientExceptionType.Other);
     }
   }
 
   Future<T> _post<T>(
       String path,
-      Map<String, dynamic>? bodyParameters,
+      Map<String, dynamic> bodyParameters,
       T Function(dynamic json) parser, [
         Map<String, dynamic>? urlParameters,
       ]) async {
@@ -86,11 +83,11 @@ class ApiClient {
       final result = parser(json);
       return result;
     } on SocketException {
-      throw ApiClientExeption(ApiClientExeptionType.Network);
-    } on ApiClientExeption {
+      throw ApiClientException(ApiClientExceptionType.Network);
+    } on ApiClientException {
       rethrow;
     } catch (_) {
-      throw ApiClientExeption(ApiClientExeptionType.Other);
+      throw ApiClientException(ApiClientExceptionType.Other);
     }
   }
 
@@ -100,7 +97,6 @@ class ApiClient {
       final token = jsonMap['request_token'] as String;
       return token;
     }
-
     final result = _get(
       '/authentication/token/new',
       parser,
@@ -115,13 +111,56 @@ class ApiClient {
       final response = PopularMovieResponse.fromJson(jsonMap);
       return response;
     }
-
     final result = _get(
       '/movie/popular',
       parser,
       <String, dynamic>{
         'api_key': _apiKey,
         'page': page.toString(),
+        'language': locale,
+      },
+    );
+    return result;
+  }
+
+  Future<PopularMovieResponse> searchMovie(
+      int page,
+      String locale,
+      String query,
+      ) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+      return response;
+    }
+    final result = _get(
+      '/search/movie',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'page': page.toString(),
+        'language': locale,
+        'query': query,
+        'include_adult': true.toString(),
+      },
+    );
+    return result;
+  }
+
+  Future<MovieDetails> movieDetails(
+      int movieId,
+      String locale,
+      ) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = MovieDetails.fromJson(jsonMap);
+      return response;
+    }
+    final result = _get(
+      '/movie/$movieId',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
         'language': locale,
       },
     );
@@ -138,7 +177,6 @@ class ApiClient {
       final token = jsonMap['request_token'] as String;
       return token;
     }
-
     final parameters = <String, dynamic>{
       'username': username,
       'password': password,
@@ -161,7 +199,6 @@ class ApiClient {
       final sessionId = jsonMap['session_id'] as String;
       return sessionId;
     }
-
     final parameters = <String, dynamic>{
       'request_token': requestToken,
     };
@@ -179,9 +216,9 @@ class ApiClient {
       final dynamic status = json['status_code'];
       final code = status is int ? status : 0;
       if (code == 30) {
-        throw ApiClientExeption(ApiClientExeptionType.Auth);
+        throw ApiClientException(ApiClientExceptionType.Auth);
       } else {
-        throw ApiClientExeption(ApiClientExeptionType.Other);
+        throw ApiClientException(ApiClientExceptionType.Other);
       }
     }
   }

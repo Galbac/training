@@ -4,18 +4,18 @@ import 'package:training/library/widgets/inherited/inherited_provider.dart';
 import 'package:training/widgets/movie_list/movie_list_model.dart';
 import 'package:training/widgets/movie_list/movie_list_widget.dart';
 
-class MainScreenWidgets extends StatefulWidget {
-  const MainScreenWidgets({Key? key}) : super(key: key);
+class MainScreenWidget extends StatefulWidget {
+  const MainScreenWidget({Key? key}) : super(key: key);
 
   @override
-  State<MainScreenWidgets> createState() => _MainScreenWidgetsState();
+  _MainScreenWidgetState createState() => _MainScreenWidgetState();
 }
 
-class _MainScreenWidgetsState extends State<MainScreenWidgets> {
+class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
   final movieListModel = MovieListModel();
 
-  void onSelectedTab(int index) {
+  void onSelectTab(int index) {
     if (_selectedTab == index) return;
     setState(() {
       _selectedTab = index;
@@ -25,31 +25,21 @@ class _MainScreenWidgetsState extends State<MainScreenWidgets> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     movieListModel.setupLocale(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    // final model = NotifierProvider.read<MainScreenModel>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'TMDB',
-        ),
-        centerTitle: true,
+        title: const Text('TMDB'),
         actions: [
           IconButton(
             onPressed: () => SessionDataProvider().setSessionId(null),
             icon: const Icon(Icons.search),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedTab,
-        onTap: onSelectedTab,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Новости"),
-          BottomNavigationBarItem(icon: Icon(Icons.movie), label: "Фильмы"),
-          BottomNavigationBarItem(icon: Icon(Icons.tv), label: "Сериалы"),
+          )
         ],
       ),
       body: IndexedStack(
@@ -57,9 +47,30 @@ class _MainScreenWidgetsState extends State<MainScreenWidgets> {
         children: [
           const Text("Новости"),
           NotifierProvider(
-              model: movieListModel, child: const MovieListWidget()),
+            create: () => movieListModel,
+            isManagingModel: false,
+            child: const MovieListWidget(),
+          ),
           const Text("Сериалы"),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedTab,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Новости',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.movie_filter),
+            label: 'Фильмы',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.tv),
+            label: 'Сериалы',
+          ),
+        ],
+        onTap: onSelectTab,
       ),
     );
   }
